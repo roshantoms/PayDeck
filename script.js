@@ -29,7 +29,7 @@ function render(filter = '') {
       const payBtn = document.createElement('button');
       payBtn.className = 'pay';
       payBtn.textContent = 'Pay';
-      payBtn.onclick = () => pay(c.upi);
+      payBtn.onclick = () => pay(c.upi, c.name);
 
       const deleteBtn = document.createElement('button');
       deleteBtn.className = 'delete';
@@ -71,14 +71,8 @@ function remove(i) {
   render();
 }
 
-function pay(upi) {
-  const amount = prompt('Enter amount');
-
-  if (!amount || isNaN(amount) || amount <= 0) {
-    return alert("Enter valid amount");
-  }
-
-  const url = `upi://pay?pa=${encodeURIComponent(upi)}&pn=PayDeck&am=${amount}&cu=INR`;
+function pay(upi, name) {
+  const url = `upi://pay?pa=${encodeURIComponent(upi)}&pn=${encodeURIComponent(name)}`;
   window.location.href = url;
 }
 
