@@ -7,13 +7,13 @@
   "theme_color": "#4f46e5",
   "icons": [
     {
-      "src": "images/PayDeck_applogo.png",
-      "sizes": "777x776",
+      "src": "images/PayDeck_applogo_192.png",
+      "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "images/PayDeck_applogo.png",
-      "sizes": "777x776",
+      "src": "images/PayDeck_applogo_512.png",
+      "sizes": "512x512",
       "type": "image/png"
     }
   ]
