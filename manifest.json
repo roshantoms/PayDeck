@@ -1,0 +1,20 @@
+{
+  "name": "PayDeck",
+  "short_name": "PayDeck",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#0b1220",
+  "theme_color": "#4f46e5",
+  "icons": [
+    {
+      "src": "images/PayDeck_applogo.png",
+      "sizes": "777x776",
+      "type": "image/png"
+    },
+    {
+      "src": "images/PayDeck_applogo.png",
+      "sizes": "777x776",
+      "type": "image/png"
+    }
+  ]
+}

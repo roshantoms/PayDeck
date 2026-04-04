@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#4f46e5">
+<title>PayDeck</title>
+<link rel="icon" href="images/PayDeck_logo.png" type="image/png"/>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="logo-modern">
+    <img src="images/PayDeck_Title.png" alt="PayDeck Title" class="logo-img">
+</div>
+<input type="text" id="search" class="search" placeholder="Search contacts...">
+
+<div class="container" id="list"></div>
+
+<div class="fab" onclick="openModal()">+</div>
+
+<div class="modal" id="modal">
+  <div class="modal-content">
+    <button class="close-btn" onclick="closeModal()">✕</button>
+    <h3 style="margin-bottom:10px">Add Contact</h3>
+    <input id="name" placeholder="Name">
+    <input id="upi" placeholder="UPI ID">
+    <input id="note" placeholder="Notes (optional)">
+    <button class="pay" onclick="addContact()">Save</button>
+  </div>
+</div>
+
+<script src="script.js"></script>
+
+<p class="note">Payments are securely handled by external UPI apps like Google Pay, PhonePe, etc.</p>
+
+</body>
+</html>
