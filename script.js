@@ -73,7 +73,7 @@ function remove(i) {
 
 function pay(upi, name) {
   const url = `upi://pay?pa=${encodeURIComponent(upi)}&pn=${encodeURIComponent(name)}`;
-  window.location.href = url;
+  window.open(url);
 }
 
 function openModal() {
