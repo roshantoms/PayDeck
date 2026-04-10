@@ -1,7 +1,16 @@
-let contacts = JSON.parse(localStorage.getItem('paydeck') || '[]');
+let contacts = [];
+try {
+  contacts = JSON.parse(localStorage.getItem('paydeck')) || [];
+} catch {
+  contacts = [];
+}
 
 function save() {
   localStorage.setItem('paydeck', JSON.stringify(contacts));
+}
+
+function sanitize(str) {
+  return str.replace(/[<>]/g, '').trim();
 }
 
 function render(filter = '') {
@@ -49,15 +58,19 @@ function render(filter = '') {
 }
 
 function addContact() {
-  const name = document.getElementById('name').value.trim();
-  const upi = document.getElementById('upi').value.trim();
-  const note = document.getElementById('note').value.trim();
+  const name = sanitize(document.getElementById('name').value);
+  const upi = sanitize(document.getElementById('upi').value);
+  const note = sanitize(document.getElementById('note').value);
 
-  if (!name || !upi) return alert('Fill required fields');
+  if (!name || !upi) {
+    alert('Fill required fields');
+    return;
+  }
 
   const upiRegex = /^[a-zA-Z0-9.\-_]{2,}@[a-zA-Z]{2,}$/;
   if (!upiRegex.test(upi)) {
-    return alert('Invalid UPI ID format (e.g., name@bank)');
+    alert('Invalid UPI ID format (e.g., name@bank)');
+    return;
   }
 
   contacts.push({ name, upi, note });
@@ -67,17 +80,33 @@ function addContact() {
 }
 
 function remove(i) {
+  if (!confirm('Delete this contact?')) return;
   contacts.splice(i, 1);
   save();
   render();
 }
 
 function pay(upi, name) {
-  const amount = prompt('Enter amount (₹):', '');
-  if (!amount || isNaN(amount) || Number(amount) <= 0) {
-    alert('Please enter a valid amount greater than 0');
+  let amount = prompt('Enter amount (₹):', '');
+
+  if (!amount) return;
+
+  amount = Number(amount);
+
+  if (isNaN(amount) || amount <= 0) {
+    alert('Enter a valid amount greater than 0');
     return;
   }
+
+  if (amount > 100000) {
+    alert('Amount exceeds limit (₹100,000)');
+    return;
+  }
+
+  amount = Math.round(amount * 100) / 100;
+
+  const confirmPay = confirm(`Pay ₹${amount} to ${name}?`);
+  if (!confirmPay) return;
 
   const url = `upi://pay?pa=${encodeURIComponent(upi)}&pn=${encodeURIComponent(name)}&am=${amount}&cu=INR`;
 
