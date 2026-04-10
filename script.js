@@ -55,8 +55,9 @@ function addContact() {
 
   if (!name || !upi) return alert('Fill required fields');
 
-  if (!upi.includes('@')) {
-    return alert('Invalid UPI ID');
+  const upiRegex = /^[a-zA-Z0-9.\-_]{2,}@[a-zA-Z]{2,}$/;
+  if (!upiRegex.test(upi)) {
+    return alert('Invalid UPI ID format (e.g., name@bank)');
   }
 
   contacts.push({ name, upi, note });
@@ -66,19 +67,25 @@ function addContact() {
 }
 
 function remove(i) {
-  contacts.splice(i,1);
+  contacts.splice(i, 1);
   save();
   render();
 }
 
 function pay(upi, name) {
-  const url = `upi://pay?pa=${encodeURIComponent(upi)}&pn=${encodeURIComponent(name)}`;
-  window.open(url);
+  const amount = prompt('Enter amount (₹):', '');
+  if (!amount || isNaN(amount) || Number(amount) <= 0) {
+    alert('Please enter a valid amount greater than 0');
+    return;
+  }
+
+  const url = `upi://pay?pa=${encodeURIComponent(upi)}&pn=${encodeURIComponent(name)}&am=${amount}&cu=INR`;
+
+  window.location.href = url;
 }
 
 function openModal() {
   document.getElementById('modal').style.display = 'flex';
-
   document.getElementById('name').value = '';
   document.getElementById('upi').value = '';
   document.getElementById('note').value = '';
