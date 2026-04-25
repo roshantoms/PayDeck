@@ -10,6 +10,8 @@
 <title>PayDeck</title>
 <link rel="icon" href="images/PayDeck_logo.png" type="image/png">
 <link rel="stylesheet" href="style.css">
+<!-- QR Code library (for optional QR generation) -->
+<script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
 </head>
 <body>
 
@@ -22,6 +24,7 @@
 
 <div class="fab" onclick="openModal()">+</div>
 
+<!-- Add Contact Modal -->
 <div class="modal" id="modal">
   <div class="modal-content">
     <button class="close-btn" onclick="closeModal()">✕</button>
@@ -33,9 +36,20 @@
   </div>
 </div>
 
+<!-- QR Code Modal (optional) -->
+<div class="modal" id="qrModal">
+  <div class="modal-content" style="text-align: center;">
+    <button class="close-btn" onclick="closeQRModal()">✕</button>
+    <h3 style="margin-bottom:10px">Scan QR with any UPI App</h3>
+    <div id="qrcode" style="display: flex; justify-content: center; margin: 20px 0;"></div>
+    <p style="font-size: 0.8rem; opacity: 0.7;">Ask the other person to scan this QR with their UPI app.</p>
+    <button class="pay" onclick="closeQRModal()" style="margin-top: 10px;">Done</button>
+  </div>
+</div>
+
 <script src="script.js"></script>
 
-<p class="note">Payments are securely handled by external UPI apps like Google Pay, PhonePe, etc.</p>
+<p class="note">💡 Tap "Pay" → enter amount → your UPI app opens (amount will be asked again there). If it fails, use "Copy Link".</p>
 
 </body>
 </html>

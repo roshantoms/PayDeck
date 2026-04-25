@@ -35,16 +35,23 @@ function render(filter = '') {
       const actions = document.createElement('div');
       actions.className = 'actions';
 
+      // Pay button – uses minimal UPI link (no am, no cu)
       const payBtn = document.createElement('button');
       payBtn.className = 'pay';
       payBtn.textContent = 'Pay';
-      payBtn.onclick = () => pay(c.upi, c.name);
+      payBtn.onclick = () => initiatePay(c.upi, c.name);
 
+      // Copy Link button – reliable fallback
       const copyBtn = document.createElement('button');
-      copyBtn.className = 'delete'; // reuse delete style, but change text
+      copyBtn.className = 'copy';
       copyBtn.textContent = 'Copy Link';
-      copyBtn.style.background = '#3b82f6'; // blue
       copyBtn.onclick = () => copyUpiLink(c.upi, c.name);
+
+      // QR Code button – for others to scan
+      const qrBtn = document.createElement('button');
+      qrBtn.className = 'qr';
+      qrBtn.textContent = 'QR Code';
+      qrBtn.onclick = () => showQRCode(c.upi, c.name);
 
       const deleteBtn = document.createElement('button');
       deleteBtn.className = 'delete';
@@ -53,6 +60,7 @@ function render(filter = '') {
 
       actions.appendChild(payBtn);
       actions.appendChild(copyBtn);
+      actions.appendChild(qrBtn);
       actions.appendChild(deleteBtn);
 
       div.appendChild(name);
@@ -96,7 +104,10 @@ function remove(i) {
   render();
 }
 
-function pay(upi, name) {
+// ---------- Payment methods ----------
+
+// Primary: minimal UPI link (no amount, no currency – avoids bank limit errors)
+function initiatePay(upi, name) {
   let amount = prompt('Enter amount (₹):', '');
   if (!amount) return;
 
@@ -107,20 +118,18 @@ function pay(upi, name) {
     return;
   }
 
-  const intAmount = Math.floor(numAmount); // integer only
-
+  const intAmount = Math.floor(numAmount);
   const confirmPay = confirm(`Pay ₹${intAmount} to ${name}?`);
   if (!confirmPay) return;
 
-  const url = `upi://pay?pa=${encodeURIComponent(upi)}&pn=${encodeURIComponent(name)}&am=${intAmount}&cu=INR`;
+  // Minimal link – only pa and pn
+  const url = `upi://pay?pa=${encodeURIComponent(upi)}&pn=${encodeURIComponent(name)}`;
   
-  // Debug: show the URL in console
-  console.log('Generated UPI URL:', url);
-  
+  // Open UPI app (no fallback popup)
   window.location.href = url;
 }
 
-// New function: copy UPI link to clipboard with any amount
+// Copy link to clipboard (with amount included)
 function copyUpiLink(upi, name) {
   let amount = prompt('Enter amount (₹) for the link:', '');
   if (!amount) return;
@@ -134,12 +143,54 @@ function copyUpiLink(upi, name) {
   const url = `upi://pay?pa=${encodeURIComponent(upi)}&pn=${encodeURIComponent(name)}&am=${intAmount}&cu=INR`;
   
   navigator.clipboard.writeText(url).then(() => {
-    alert('UPI link copied! Open any UPI app and paste it into the browser or "Pay to UPI ID" field.');
+    alert('UPI link copied! Open any UPI app → Pay to UPI ID → paste the link.');
   }).catch(() => {
-    alert('Failed to copy. Manually copy this:\n' + url);
+    alert('Failed to copy. Manually copy:\n' + url);
   });
 }
 
+// Generate QR code (for others to scan)
+function showQRCode(upi, name) {
+  let amount = prompt('Enter amount (₹):', '');
+  if (!amount) return;
+
+  amount = amount.toString().replace(/[₹,]/g, '');
+  let numAmount = parseFloat(amount);
+  if (isNaN(numAmount) || numAmount <= 0) {
+    alert('Enter a valid amount greater than 0');
+    return;
+  }
+
+  const intAmount = Math.floor(numAmount);
+  const confirmMsg = confirm(`Generate QR code for ₹${intAmount} to ${name}?`);
+  if (!confirmMsg) return;
+
+  const upiUrl = `upi://pay?pa=${encodeURIComponent(upi)}&pn=${encodeURIComponent(name)}&am=${intAmount}&cu=INR`;
+
+  const qrContainer = document.getElementById('qrcode');
+  qrContainer.innerHTML = '';
+
+  try {
+    new QRCode(qrContainer, {
+      text: upiUrl,
+      width: 256,
+      height: 256,
+      colorDark: '#000000',
+      colorLight: '#ffffff',
+      correctLevel: QRCode.CorrectLevel.H
+    });
+    document.getElementById('qrModal').style.display = 'flex';
+  } catch (err) {
+    alert('Failed to generate QR code.');
+    console.error(err);
+  }
+}
+
+function closeQRModal() {
+  document.getElementById('qrModal').style.display = 'none';
+}
+
+// ---------- Modal helpers ----------
 function openModal() {
   document.getElementById('modal').style.display = 'flex';
 }
@@ -148,12 +199,10 @@ function closeModal() {
   document.getElementById('modal').style.display = 'none';
 }
 
+// ---------- Initialisation ----------
 document.getElementById('search').addEventListener('input', e => render(e.target.value));
-
 render();
 
 if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('sw.js').catch(err => {
-    console.log('Service Worker registration failed:', err);
-  });
+  navigator.serviceWorker.register('sw.js').catch(err => console.log('SW registration failed:', err));
 }
