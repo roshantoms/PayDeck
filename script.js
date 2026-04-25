@@ -40,12 +40,19 @@ function render(filter = '') {
       payBtn.textContent = 'Pay';
       payBtn.onclick = () => pay(c.upi, c.name);
 
+      const copyBtn = document.createElement('button');
+      copyBtn.className = 'delete'; // reuse delete style, but change text
+      copyBtn.textContent = 'Copy Link';
+      copyBtn.style.background = '#3b82f6'; // blue
+      copyBtn.onclick = () => copyUpiLink(c.upi, c.name);
+
       const deleteBtn = document.createElement('button');
       deleteBtn.className = 'delete';
       deleteBtn.textContent = 'Delete';
       deleteBtn.onclick = () => remove(i);
 
       actions.appendChild(payBtn);
+      actions.appendChild(copyBtn);
       actions.appendChild(deleteBtn);
 
       div.appendChild(name);
@@ -93,28 +100,44 @@ function pay(upi, name) {
   let amount = prompt('Enter amount (₹):', '');
   if (!amount) return;
 
-  // Remove currency symbols and commas
   amount = amount.toString().replace(/[₹,]/g, '');
   let numAmount = parseFloat(amount);
-
   if (isNaN(numAmount) || numAmount <= 0) {
     alert('Enter a valid amount greater than 0');
     return;
   }
 
-  // Convert to integer (remove decimals) – banks prefer this
-  const intAmount = Math.floor(numAmount);
+  const intAmount = Math.floor(numAmount); // integer only
 
   const confirmPay = confirm(`Pay ₹${intAmount} to ${name}?`);
   if (!confirmPay) return;
 
-  // Minimal UPI URL – no transaction note, no decimals
   const url = `upi://pay?pa=${encodeURIComponent(upi)}&pn=${encodeURIComponent(name)}&am=${intAmount}&cu=INR`;
-
-  // Open the UPI app
+  
+  // Debug: show the URL in console
+  console.log('Generated UPI URL:', url);
+  
   window.location.href = url;
+}
 
-  // No fallback alert – user can manually retry if needed
+// New function: copy UPI link to clipboard with any amount
+function copyUpiLink(upi, name) {
+  let amount = prompt('Enter amount (₹) for the link:', '');
+  if (!amount) return;
+  amount = amount.toString().replace(/[₹,]/g, '');
+  let numAmount = parseFloat(amount);
+  if (isNaN(numAmount) || numAmount <= 0) {
+    alert('Enter a valid amount');
+    return;
+  }
+  const intAmount = Math.floor(numAmount);
+  const url = `upi://pay?pa=${encodeURIComponent(upi)}&pn=${encodeURIComponent(name)}&am=${intAmount}&cu=INR`;
+  
+  navigator.clipboard.writeText(url).then(() => {
+    alert('UPI link copied! Open any UPI app and paste it into the browser or "Pay to UPI ID" field.');
+  }).catch(() => {
+    alert('Failed to copy. Manually copy this:\n' + url);
+  });
 }
 
 function openModal() {
