@@ -103,7 +103,6 @@ button {
 }
 button:hover { transform: scale(1.02); }
 
-/* New button styles */
 .copy-upi {
   background: #3b82f6;
   color: white;
@@ -137,10 +136,11 @@ button:hover { transform: scale(1.02); }
   box-shadow: 0 10px 25px rgba(79,70,229,0.4);
 }
 
+/* MODAL – fully opaque background */
 .modal {
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.6);
+  background: #0b1220; /* solid, no transparency */
   display: none;
   align-items: center;
   justify-content: center;
@@ -149,7 +149,7 @@ button:hover { transform: scale(1.02); }
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
 .modal-content {
-  background: #1e293b;
+  background: #1e293b; /* solid */
   padding: 1.5rem;
   border-radius: 18px;
   width: 90%;
@@ -171,15 +171,23 @@ button:hover { transform: scale(1.02); }
   font-size: 1.2rem;
   color: #9ca3af;
 }
+
+/* Input fields – fully opaque */
 .modal input {
   width: 100%;
   margin-bottom: 0.75rem;
   padding: 0.75rem;
   border-radius: 10px;
   border: none;
-  background: rgba(255,255,255,0.05);
+  background: #0f172a; /* solid dark */
   color: white;
+  border: 1px solid #334155;
 }
+.modal input:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
 .note {
   font-size: 0.75rem;
   margin-top: 1rem;
