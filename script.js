@@ -67,9 +67,10 @@ function addContact() {
     return;
   }
 
-  const upiRegex = /^[a-zA-Z0-9.\-_]{2,}@[a-zA-Z]{2,}$/;
+  // ✅ Fixed regex – allows all common bank handles
+  const upiRegex = /^[a-zA-Z0-9.\-_]{2,}@[a-zA-Z0-9.\-_]{2,}$/;
   if (!upiRegex.test(upi)) {
-    alert('Invalid UPI ID format (e.g., name@bank)');
+    alert('Invalid UPI ID format (e.g., name@okhdfcbank)');
     return;
   }
 
@@ -77,6 +78,9 @@ function addContact() {
   save();
   render();
   closeModal();
+  document.getElementById('name').value = '';
+  document.getElementById('upi').value = '';
+  document.getElementById('note').value = '';
 }
 
 function remove(i) {
@@ -91,33 +95,42 @@ function pay(upi, name) {
 
   if (!amount) return;
 
-  amount = Number(amount);
+  // Remove currency symbols and commas
+  amount = amount.toString().replace(/[₹,]/g, '');
+  let numAmount = parseFloat(amount);
 
-  if (isNaN(amount) || amount <= 0) {
+  if (isNaN(numAmount) || numAmount <= 0) {
     alert('Enter a valid amount greater than 0');
     return;
   }
 
-  if (amount > 100000) {
+  if (numAmount > 100000) {
     alert('Amount exceeds limit (₹100,000)');
     return;
   }
 
-  amount = Math.round(amount * 100) / 100;
+  const formattedAmount = numAmount.toFixed(2);  // always two decimals
 
-  const confirmPay = confirm(`Pay ₹${amount} to ${name}?`);
+  const confirmPay = confirm(`Pay ₹${formattedAmount} to ${name}?`);
   if (!confirmPay) return;
 
-  const url = `upi://pay?pa=${encodeURIComponent(upi)}&pn=${encodeURIComponent(name)}&am=${amount}&cu=INR`;
+  // ✅ Complete UPI URL with transaction note
+  const encodedPA = encodeURIComponent(upi);
+  const encodedPN = encodeURIComponent(name);
+  const encodedNote = encodeURIComponent(`Payment to ${name}`);
+  const url = `upi://pay?pa=${encodedPA}&pn=${encodedPN}&am=${formattedAmount}&cu=INR&tn=${encodedNote}`;
 
+  // Try to open UPI app
   window.location.href = url;
+
+  // Fallback in case nothing happens
+  setTimeout(() => {
+    alert("If UPI app didn't open, make sure you have Google Pay, PhonePe, or Paytm installed.");
+  }, 2000);
 }
 
 function openModal() {
   document.getElementById('modal').style.display = 'flex';
-  document.getElementById('name').value = '';
-  document.getElementById('upi').value = '';
-  document.getElementById('note').value = '';
 }
 
 function closeModal() {
@@ -128,6 +141,11 @@ document.getElementById('search').addEventListener('input', e => render(e.target
 
 render();
 
+// Register service worker
 if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('sw.js');
+  navigator.serviceWorker.register('sw.js').then(() => {
+    console.log('Service Worker registered');
+  }).catch(err => {
+    console.log('Service Worker registration failed:', err);
+  });
 }

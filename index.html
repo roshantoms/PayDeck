@@ -2,11 +2,13 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#4f46e5">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>PayDeck</title>
-<link rel="icon" href="images/PayDeck_logo.png" type="image/png"/>
+<link rel="icon" href="images/PayDeck_logo.png" type="image/png">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -24,9 +26,9 @@
   <div class="modal-content">
     <button class="close-btn" onclick="closeModal()">✕</button>
     <h3 style="margin-bottom:10px">Add Contact</h3>
-    <input id="name" placeholder="Name">
-    <input id="upi" placeholder="UPI ID">
-    <input id="note" placeholder="Notes (optional)">
+    <input id="name" placeholder="Name" autocomplete="off">
+    <input id="upi" placeholder="UPI ID (e.g., name@okhdfcbank)" autocomplete="off">
+    <input id="note" placeholder="Notes (optional)" autocomplete="off">
     <button class="pay" onclick="addContact()">Save</button>
   </div>
 </div>
