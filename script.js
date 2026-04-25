@@ -67,7 +67,6 @@ function addContact() {
     return;
   }
 
-  // More permissive regex: allows alphanumeric, dot, hyphen, underscore before @, and after @ (bank handle)
   const upiRegex = /^[a-zA-Z0-9.\-_]{2,}@[a-zA-Z0-9.\-_]{2,}$/;
   if (!upiRegex.test(upi)) {
     alert('Invalid UPI ID format (e.g., name@okhdfcbank)');
@@ -94,54 +93,28 @@ function pay(upi, name) {
   let amount = prompt('Enter amount (₹):', '');
   if (!amount) return;
 
-  // Remove any non-numeric except decimal point
-  let cleaned = amount.toString().replace(/[₹,]/g, '');
-  let numAmount = parseFloat(cleaned);
-  
+  // Remove currency symbols and commas
+  amount = amount.toString().replace(/[₹,]/g, '');
+  let numAmount = parseFloat(amount);
+
   if (isNaN(numAmount) || numAmount <= 0) {
-    alert('Please enter a valid amount greater than 0');
+    alert('Enter a valid amount greater than 0');
     return;
   }
 
-  // Remove the hardcoded 100k limit - let the UPI app enforce its own limits
-  // (If you want to keep a limit, you can uncomment but set higher)
-  /*
-  if (numAmount > 100000) {
-    alert('Amount exceeds limit (₹100,000)');
-    return;
-  }
-  */
+  // Convert to integer (remove decimals) – banks prefer this
+  const intAmount = Math.floor(numAmount);
 
-  const confirmPay = confirm(`Pay ₹${numAmount} to ${name} (${upi})?`);
+  const confirmPay = confirm(`Pay ₹${intAmount} to ${name}?`);
   if (!confirmPay) return;
 
-  // Format amount as integer (no decimal) - most UPI apps prefer this for INR
-  // But keep decimal for paise if amount has cents
-  let amountParam;
-  if (numAmount % 1 === 0) {
-    amountParam = Math.round(numAmount).toString(); // "100"
-  } else {
-    amountParam = numAmount.toFixed(2); // "100.50"
-  }
+  // Minimal UPI URL – no transaction note, no decimals
+  const url = `upi://pay?pa=${encodeURIComponent(upi)}&pn=${encodeURIComponent(name)}&am=${intAmount}&cu=INR`;
 
-  // Encode parameters
-  const encodedPA = encodeURIComponent(upi);
-  const encodedPN = encodeURIComponent(name);
-  const encodedNote = encodeURIComponent(`Pay to ${name}`); // short note
-  
-  // Build UPI URL without 'cu=INR' (it's default) and without any extra params
-  // Some apps are picky about unknown params
-  const url = `upi://pay?pa=${encodedPA}&pn=${encodedPN}&am=${amountParam}&tn=${encodedNote}`;
-  
-  console.log('Opening UPI URL:', url);
-  
-  // Try to open
+  // Open the UPI app
   window.location.href = url;
-  
-  // Fallback message
-  setTimeout(() => {
-    alert("If payment app doesn't open, please ensure you have Google Pay, PhonePe, or any UPI app installed.\n\nIf it opens but shows an error, the UPI ID might be incorrect or the bank doesn't support this ID.");
-  }, 1500);
+
+  // No fallback alert – user can manually retry if needed
 }
 
 function openModal() {
@@ -157,9 +130,7 @@ document.getElementById('search').addEventListener('input', e => render(e.target
 render();
 
 if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('sw.js').then(() => {
-    console.log('Service Worker registered');
-  }).catch(err => {
+  navigator.serviceWorker.register('sw.js').catch(err => {
     console.log('Service Worker registration failed:', err);
   });
 }
