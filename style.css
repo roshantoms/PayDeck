@@ -136,11 +136,11 @@ button:hover { transform: scale(1.02); }
   box-shadow: 0 10px 25px rgba(79,70,229,0.4);
 }
 
-/* MODAL – fully opaque background */
+/* MODAL OVERLAY – semi‑transparent (so logo/search are dimly visible) */
 .modal {
   position: fixed;
   inset: 0;
-  background: #0b1220; /* solid, no transparency */
+  background: rgba(0, 0, 0, 0.7); /* darker but still see-through */
   display: none;
   align-items: center;
   justify-content: center;
@@ -148,6 +148,7 @@ button:hover { transform: scale(1.02); }
 }
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
+/* MODAL CONTENT (the white/gray box) – completely solid */
 .modal-content {
   background: #1e293b; /* solid */
   padding: 1.5rem;
@@ -172,7 +173,7 @@ button:hover { transform: scale(1.02); }
   color: #9ca3af;
 }
 
-/* Input fields – fully opaque */
+/* Input fields – fully opaque solid */
 .modal input {
   width: 100%;
   margin-bottom: 0.75rem;
