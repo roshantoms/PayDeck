@@ -7,11 +7,9 @@
 <meta name="theme-color" content="#4f46e5">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<title>PayDeck</title>
+<title>PayDeck – Copy UPI / Phone</title>
 <link rel="icon" href="images/PayDeck_logo.png" type="image/png">
 <link rel="stylesheet" href="style.css">
-<!-- QR Code library (for optional QR generation) -->
-<script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
 </head>
 <body>
 
@@ -24,32 +22,22 @@
 
 <div class="fab" onclick="openModal()">+</div>
 
-<!-- Add Contact Modal -->
+<!-- Add / Edit Contact Modal -->
 <div class="modal" id="modal">
   <div class="modal-content">
     <button class="close-btn" onclick="closeModal()">✕</button>
     <h3 style="margin-bottom:10px">Add Contact</h3>
     <input id="name" placeholder="Name" autocomplete="off">
     <input id="upi" placeholder="UPI ID (e.g., name@okhdfcbank)" autocomplete="off">
+    <input id="phone" placeholder="Phone Number (optional)" autocomplete="off">
     <input id="note" placeholder="Notes (optional)" autocomplete="off">
     <button class="pay" onclick="addContact()">Save</button>
   </div>
 </div>
 
-<!-- QR Code Modal (optional) -->
-<div class="modal" id="qrModal">
-  <div class="modal-content" style="text-align: center;">
-    <button class="close-btn" onclick="closeQRModal()">✕</button>
-    <h3 style="margin-bottom:10px">Scan QR with any UPI App</h3>
-    <div id="qrcode" style="display: flex; justify-content: center; margin: 20px 0;"></div>
-    <p style="font-size: 0.8rem; opacity: 0.7;">Ask the other person to scan this QR with their UPI app.</p>
-    <button class="pay" onclick="closeQRModal()" style="margin-top: 10px;">Done</button>
-  </div>
-</div>
-
 <script src="script.js"></script>
 
-<p class="note">💡 Tap "Pay" → enter amount → your UPI app opens (amount will be asked again there). If it fails, use "Copy Link".</p>
+<p class="note">📋 Tap "Copy UPI" or "Copy Phone" – then paste into any UPI app or dialer.</p>
 
 </body>
 </html>

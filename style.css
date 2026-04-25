@@ -3,13 +3,11 @@
   src: url('./fonts/Inter-Regular.woff2') format('woff2');
   font-weight: 400;
 }
-
 @font-face {
   font-family: 'Inter';
   src: url('./fonts/Inter-Medium.woff2') format('woff2');
   font-weight: 500;
 }
-
 @font-face {
   font-family: 'Inter';
   src: url('./fonts/Inter-SemiBold.woff2') format('woff2');
@@ -39,14 +37,11 @@ body {
   gap: 0.75rem;
   margin-bottom: 1rem;
 }
-
-/* Logo Image */
 .logo-modern img {
   height: 50px;
   width: auto;
   object-fit: contain;
 }
-
 .logo-modern img:hover {
   transform: scale(1.05);
   transition: transform 0.2s ease;
@@ -59,10 +54,9 @@ body {
   border: none;
   background: rgba(255,255,255,0.05);
   color: white;
-  margin-bottom: .11rem;
+  margin-bottom: 1rem;
   transition: 0.3s;
 }
-
 .search:focus {
   outline: none;
   background: rgba(255,255,255,0.08);
@@ -83,22 +77,20 @@ body {
   opacity: 0;
   animation: fadeUp 0.4s forwards;
 }
-
 .card:hover {
   transform: translateY(-4px) scale(1.01);
 }
-
 @keyframes fadeUp {
   to { transform: translateY(0); opacity: 1; }
 }
-
 .card h3 { margin-bottom: 0.25rem; font-weight: 500; }
-.card p { font-size: 0.8rem; opacity: 0.7; }
+.card p { font-size: 0.8rem; opacity: 0.7; margin: 0.2rem 0; }
 
 .actions {
   margin-top: 0.6rem;
   display: flex;
   gap: 0.5rem;
+  flex-wrap: wrap;
 }
 
 button {
@@ -107,12 +99,27 @@ button {
   border-radius: 10px;
   cursor: pointer;
   transition: 0.2s;
+  font-weight: 500;
 }
+button:hover { transform: scale(1.02); }
 
-button:hover { transform: scale(1.05); }
-
-.pay { background: linear-gradient(135deg,var(--accent),var(--accent-light)); color: white; }
-.delete { background: #ef4444; color: white; }
+/* New button styles */
+.copy-upi {
+  background: #3b82f6;
+  color: white;
+}
+.copy-phone {
+  background: #10b981;
+  color: white;
+}
+.delete {
+  background: #ef4444;
+  color: white;
+}
+.pay {
+  background: linear-gradient(135deg,var(--accent),var(--accent-light));
+  color: white;
+}
 
 .fab {
   position: fixed;
@@ -139,7 +146,6 @@ button:hover { transform: scale(1.05); }
   justify-content: center;
   animation: fadeIn 0.3s;
 }
-
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
 .modal-content {
@@ -152,7 +158,6 @@ button:hover { transform: scale(1.05); }
   position: relative;
   box-shadow: 0 20px 40px rgba(0,0,0,0.5);
 }
-
 @keyframes slideUp {
   from { transform: translateY(40px); opacity: 0; }
   to { transform: translateY(0); opacity: 1; }
@@ -166,7 +171,6 @@ button:hover { transform: scale(1.05); }
   font-size: 1.2rem;
   color: #9ca3af;
 }
-
 .modal input {
   width: 100%;
   margin-bottom: 0.75rem;
@@ -176,9 +180,9 @@ button:hover { transform: scale(1.05); }
   background: rgba(255,255,255,0.05);
   color: white;
 }
-
 .note {
   font-size: 0.75rem;
   margin-top: 1rem;
   opacity: 0.5;
+  text-align: center;
 }
